@@ -936,6 +936,17 @@ pub trait RpcApi: Sized {
             "rescanblockchain", handle_defaults(&mut args, &[0.into(), null()]))?;
         Ok((res.start_height, res.stop_height))
     }
+
+    /// Submit hex-encoded block data as a new block to network
+    fn submit_block(&self, hexdata: &str) -> Result<()> {
+        let mut args = [into_json(hexdata)?, into_json("")?];
+        self.call("submitblock", &args)
+    }
+
+    /// Submit hex-encoded block header data as a candidate chain tip if valid
+    fn submit_header(&self, hexdata: &str) -> Result<()> {
+        self.call("submitheader", &[into_json(hexdata)?])
+    }
 }
 
 /// Client implements a JSON-RPC client for the Bitcoin Core daemon or compatible APIs.
